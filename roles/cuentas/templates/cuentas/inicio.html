@@ -1,0 +1,33 @@
+{% extends 'cuentas/base.html' %}
+{% block contenido %}
+<section class="tarjeta">
+    <h1>Productos del almacén</h1>
+    {% if rol == 'Administrador' %}
+        <p>Puedes crear, editar y eliminar todos los productos.</p>
+        <a class="boton" href="{% url 'crear_producto' %}">Crear producto</a>
+    {% else %}
+        <p>Puedes ver todos los productos y editar los que tienes asignados.</p>
+    {% endif %}
+    <div class="tabla">
+        <table>
+            <thead><tr><th>Nombre</th><th>Precio ($)</th><th>Stock</th><th>Encargado</th><th>Acciones</th></tr></thead>
+            <tbody>
+            {% for producto in productos %}
+                <tr>
+                    <td>{{ producto.nombre }}</td><td>{{ producto.precio }}</td>
+                    <td>{{ producto.stock }}</td><td>{{ producto.encargado.username }}</td>
+                    <td>
+                        {% if rol == 'Administrador' or producto.encargado_id == user.id %}
+                            <a class="boton" href="{% url 'editar_producto' producto.pk %}">Editar</a>
+                        {% else %}Solo lectura{% endif %}
+                        {% if rol == 'Administrador' %}
+                            <a class="boton peligro" href="{% url 'eliminar_producto' producto.pk %}">Eliminar</a>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% empty %}<tr><td colspan="5">Todavía no hay productos.</td></tr>{% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+{% endblock %}

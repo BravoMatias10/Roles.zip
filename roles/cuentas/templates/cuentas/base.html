@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Mi Tienda</title>
+    <style>
+        * { box-sizing: border-box; }
+        body { margin: 0; font-family: Arial, sans-serif; background: #f3f5f7; color: #243247; }
+        header { background: #173b54; color: white; padding: 18px; }
+        nav { max-width: 960px; margin: auto; display: flex; gap: 18px; align-items: center; flex-wrap: wrap; }
+        nav a { color: white; text-decoration: none; }
+        .marca { font-size: 23px; font-weight: bold; margin-right: auto; }
+        main { max-width: 1000px; margin: 35px auto; padding: 0 20px; }
+        .tarjeta { background: white; border: 1px solid #dce2e8; padding: 26px; border-radius: 10px; }
+        .login { max-width: 430px; margin: 60px auto; }
+        h1 { margin-top: 0; }
+        .boton { display: inline-block; background: #176a57; color: white; padding: 10px 15px; border: 0; border-radius: 5px; text-decoration: none; font: inherit; cursor: pointer; }
+        .peligro { background: #af3434; }
+        .secundario { background: #526477; }
+        nav form { margin: 0; }
+        label { display: block; font-weight: bold; margin: 16px 0 7px; }
+        input, select { width: 100%; padding: 10px; border: 1px solid #adb8c4; border-radius: 4px; font: inherit; }
+        .tabla { overflow-x: auto; margin-top: 20px; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { text-align: left; padding: 13px 9px; border-bottom: 1px solid #dce2e8; }
+        th { background: #edf2f5; }
+        td .boton { margin: 3px 0; }
+        .aviso { padding: 12px; background: #e4f3e9; }
+        .errorlist { color: #a52727; }
+        .acciones { display: flex; gap: 10px; margin-top: 20px; flex-wrap: wrap; }
+        :focus-visible { outline: 3px solid #e68c20; outline-offset: 3px; }
+    </style>
+</head>
+<body>
+    <header><nav aria-label="Menú principal">
+        <a class="marca" href="{% url 'inicio' %}">Mi Tienda</a>
+        {% if user.is_authenticated %}
+            <span>{{ user.username }} · {{ rol|default:'Cuenta' }}</span>
+            <a href="{% url 'inicio' %}">Productos</a>
+            {% if user.is_superuser %}<a href="{% url 'admin:index' %}">Usuarios</a>{% endif %}
+            <form action="{% url 'logout' %}" method="post">
+                {% csrf_token %}<button class="boton secundario" type="submit">Cerrar sesión</button>
+            </form>
+        {% endif %}
+    </nav></header>
+    <main>
+        {% for message in messages %}<p class="aviso" role="status">{{ message }}</p>{% endfor %}
+        {% block contenido %}{% endblock %}
+    </main>
+</body>
+</html>

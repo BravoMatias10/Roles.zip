@@ -1,0 +1,9 @@
+{% extends 'cuentas/base.html' %}
+{% block contenido %} 
+<section class="tarjeta">
+    <span class="etiqueta">ACCESO DENEGADO - 403</span>
+    <h1>No tiene permisos para entrar</h1>
+    <p>Tu rol no permite ingresar a esta página</p>
+    <a href="{% url 'inicio' %}" class="boton">Volver al inicio</a>
+</section>
+{% endblock %} 

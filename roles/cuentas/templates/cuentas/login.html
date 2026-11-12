@@ -1,0 +1,27 @@
+{% extends 'cuentas/base.html' %}
+{% block contenido %} 
+<section class="tarjeta login">
+    <span class="etiqueta">Mi Tienda</span>
+    <h1>Iniciar sesión</h1>
+    <p>Ingresa a tu cuenta para continuar</p>
+    {% if form.errors %}
+        <p class="aviso" role="alert">Revisa tu usuario y contraseña, la cuenta tiene que estar activa</p>
+    {% endif %}
+
+    <!--LoginView recibe los campos de usuario y contraseña-->
+    <form action="{% url 'login' %}" method="post">
+        {% csrf_token %}
+        <!--conserva la pagina solicitada antes de iniciar sesion-->
+        <input type="hidden" name="next" value="{{ next }}">
+
+        <label for="usuario">Usuario</label>
+        <input id="usuario" name="username" value="{{ form.username.value | default:'' }}" autocomplete="username" maxlength="150" required autofocus>
+
+        <label for="clave">Contraseña</label>
+        <input type="password" id="clave" name="password" autocomplete="current-password" required>
+
+        <button class="boton ancho" type="submit">Iniciar Sesión</button>
+        <p class="ayuda">Necesitas una cuenta? solicitala al administrador</p>
+    </form>
+</section>
+{% endblock %}
