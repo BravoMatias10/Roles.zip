@@ -1,34 +1,24 @@
-from decimal import Decimal
 from django import forms
 from django.contrib.auth.models import User
 from .models import Producto
 
 
 class ProductoForm(forms.ModelForm):
+    # Solo se pueden asignar productos a vendedores activos
+    encargado = forms.ModelChoiceField(
+        queryset=User.objects.filter(is_active=True, groups__name='Vendedor')
+    )
+    precio = forms.DecimalField(max_digits=10, decimal_places=2, min_value=0)
+
     class Meta:
         model = Producto
         fields = ['nombre', 'precio', 'stock', 'encargado']
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields['precio'].min_value = Decimal('0')
-        self.fields['stock'].min_value = 0
-        self.fields['encargado'].queryset = User.objects.filter(
-            is_active=True, groups__name='Vendedor').distinct()
 
-    def clean_precio(self):
-        precio = self.cleaned_data['precio']
-        if precio < 0:
-            raise forms.ValidationError('El precio no puede ser negativo.')
-        return precio
+class ProductoVendedorForm(forms.ModelForm):
+    precio = forms.DecimalField(max_digits=10, decimal_places=2, min_value=0)
 
-
-class ProductoVendedorForm(ProductoForm):
-    class Meta(ProductoForm.Meta):
-        # El vendedor no puede cambiar el encargado, ni enviándolo por POST.
+    class Meta:
+        model = Producto
+        # El vendedor no puede cambiar el encargado
         fields = ['nombre', 'precio', 'stock']
-
-    def __init__(self, *args, **kwargs):
-        forms.ModelForm.__init__(self, *args, **kwargs)
-        self.fields['precio'].min_value = Decimal('0')
-        self.fields['stock'].min_value = 0

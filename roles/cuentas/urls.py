@@ -1,11 +1,14 @@
-from django.contrib.auth.views import LoginView
+from django.contrib.auth.views import LoginView, LogoutView
 from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('login/', LoginView.as_view(template_name='cuentas/login.html',
-                                   redirect_authenticated_user=True), name='login'),
-    path('logout/', views.cerrar_sesion, name='logout'),
+    # Django comprueba las credenciales de inicio de sesión
+    path('login/', LoginView.as_view(template_name='cuentas/login.html', redirect_authenticated_user=True), name='login'),
+    # Django se encarga de cerrar la sesión
+    path('logout/', LogoutView.as_view(), name='logout'),
+
+    # Estas vistas las programamos nosotros
     path('', views.inicio, name='inicio'),
     path('productos/crear/', views.crear_producto, name='crear_producto'),
     path('productos/<int:pk>/editar/', views.editar_producto, name='editar_producto'),
